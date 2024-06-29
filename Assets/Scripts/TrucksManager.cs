@@ -57,6 +57,7 @@ public class TrucksManager : MonoBehaviour
         newGameObject.SetActive(false);
         TruckMovementScript tr = newGameObject.GetComponent<TruckMovementScript>();
         tr.pathDefiner = mainRoadPath;
+        tr.stopDuration -= 0.2f * SavingLoadingManager.Instance.LoadSmallTruckLevel();
         totalTrucks.Add(tr);
         idleTrucks.Add(tr);
     }
@@ -66,6 +67,7 @@ public class TrucksManager : MonoBehaviour
         GameObject newGameObject = Instantiate(largeTruckPrefab, this.gameObject.transform);
         newGameObject.SetActive(false);
         TruckMovementScript tr = newGameObject.GetComponent<TruckMovementScript>();
+        tr.stopDuration -= 0.2f * SavingLoadingManager.Instance.LoadLargeTruckLevel();
         tr.pathDefiner = mainRoadPath;
         totalTrucks.Add(tr);
         idleTrucks.Add(tr);

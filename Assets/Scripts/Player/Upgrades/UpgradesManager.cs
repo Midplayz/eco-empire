@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,14 @@ public class UpgradesManager : MonoBehaviour
 
     public int smallTruckLevel = 0;
     public int largeTrucksLevel = 0;
+
+    public int currentCostOfSmallTruckQty;
+    public int currentCostOfSmallTruckSpeed;
+
+    public int currentCostOfLargeTruckQty;
+    public int currentCostOfLargeTruckSpeed;
+
+    public List<int> currentHouseCosts;
 
     [Header("UI Area")]
     [field: SerializeField] private Button upgradeButton;
@@ -58,6 +67,7 @@ public class UpgradesManager : MonoBehaviour
         largeTruckActiveButton.interactable = false;
         houseActiveButton.interactable = false;
         LoadSavedUpgradeValues();
+        setInitialPrices();
 
         smallTruckInactiveButton.onClick.AddListener(() => ChangeContent(typeOfButton.SmallTruck));
         largeTruckInactiveButton.onClick.AddListener(() => ChangeContent(typeOfButton.LargeTruck));
@@ -66,6 +76,43 @@ public class UpgradesManager : MonoBehaviour
         OnOpenUpgradeMenu();
     }
     
+    private void setInitialPrices()
+    {
+        if (smallTruckLevel > 0)
+        {
+            for (int i = 0; i < smallTruckLevel; i++)
+            {
+                currentCostOfSmallTruckSpeed = Mathf.RoundToInt(currentCostOfSmallTruckSpeed * 1.5f);
+                currentCostOfSmallTruckSpeed = RoundToNearestMultiple(currentCostOfSmallTruckSpeed);
+            }
+        }
+        if (smallTrucksOwned > 1)
+        {
+            for (int i = 0; i < smallTrucksOwned - 1; i++)
+            {
+                currentCostOfSmallTruckQty = Mathf.RoundToInt(currentCostOfSmallTruckQty * 1.5f);
+                currentCostOfSmallTruckQty = RoundToNearestMultiple(currentCostOfSmallTruckQty);
+            }
+        }
+
+        if (largeTrucksLevel > 0)
+        {
+            for (int i = 0; i < largeTrucksLevel; i++)
+            {
+                currentCostOfLargeTruckSpeed = Mathf.RoundToInt(currentCostOfLargeTruckSpeed * 1.5f);
+                currentCostOfLargeTruckSpeed = RoundToNearestMultiple(currentCostOfLargeTruckSpeed);
+            }
+        }
+        if (largeTrucksOwned > 1)
+        {
+            for (int i = 0; i < largeTrucksOwned - 1; i++)
+            {
+                currentCostOfLargeTruckQty = Mathf.RoundToInt(currentCostOfLargeTruckQty * 1.5f);
+                currentCostOfLargeTruckQty = RoundToNearestMultiple(currentCostOfLargeTruckQty);
+            }
+        }
+    }
+
     private void onUpgradeButtonClicked()
     {
         upgradePanel.SetActive(true);
@@ -151,4 +198,71 @@ public class UpgradesManager : MonoBehaviour
                 break;
         }
     }
+
+    private void OnApplicationQuit()
+    {
+        SavingLoadingManager.Instance.SaveHousesUnlocked(housesUnlocked);
+        SavingLoadingManager.Instance.SaveLargeTruckLevel(largeTrucksLevel);
+        SavingLoadingManager.Instance.SaveLargeTrucksOwned(largeTrucksOwned);
+        SavingLoadingManager.Instance.SaveSmallTruckLevel(smallTruckLevel);
+        SavingLoadingManager.Instance.SaveSmallTrucksOwned(smallTrucksOwned);
+    }
+
+    public static int RoundToNearestMultiple(int value)
+    {
+        if (value <= 100)
+        {
+            return Mathf.CeilToInt(value / 50f) * 50;
+        }
+        else if (value <= 1000)
+        {
+            return Mathf.CeilToInt(value / 100f) * 100;
+        }
+        else
+        {
+            return Mathf.CeilToInt(value / 1000f) * 1000;
+        }
+    }
+
+    #region Manage Upgrades
+    public void OnSmallTruckUpgraded()
+    {
+        List<TruckMovementScript> smallTrucks = TrucksManager.Instance.totalTrucks.Where(truck => truck.truckCapacity == 1).ToList();
+        foreach(TruckMovementScript truck in smallTrucks)
+        {
+            truck.stopDuration -= 0.2f;
+        }
+        currentCostOfSmallTruckSpeed = Mathf.RoundToInt(currentCostOfSmallTruckSpeed * 1.5f);
+        currentCostOfSmallTruckSpeed = RoundToNearestMultiple(currentCostOfSmallTruckSpeed);
+        SaveUpgradeValues();
+    }
+    
+    public void OnSmallTruckQtyPurchased()
+    {
+        TrucksManager.Instance.OnSmallTruckPurchase();
+        currentCostOfSmallTruckQty = Mathf.RoundToInt(currentCostOfSmallTruckQty * 1.5f);
+        currentCostOfSmallTruckQty = RoundToNearestMultiple(currentCostOfSmallTruckQty);
+        SaveUpgradeValues();
+    }
+
+    public void OnLargeTruckUpgraded()
+    {
+        List<TruckMovementScript> largeTrucks = TrucksManager.Instance.totalTrucks.Where(truck => truck.truckCapacity == 2).ToList();
+        foreach (TruckMovementScript truck in largeTrucks)
+        {
+            truck.stopDuration -= 0.2f;
+        }
+        currentCostOfLargeTruckSpeed = Mathf.RoundToInt(currentCostOfLargeTruckSpeed * 1.5f);
+        currentCostOfLargeTruckSpeed = RoundToNearestMultiple(currentCostOfLargeTruckSpeed);
+        SaveUpgradeValues();
+    }
+
+    public void OnLargeTruckQtyPurchased()
+    {
+        TrucksManager.Instance.OnLargeTruckPurchase();
+        currentCostOfLargeTruckQty = Mathf.RoundToInt(currentCostOfLargeTruckQty * 1.5f);
+        currentCostOfLargeTruckQty = RoundToNearestMultiple(currentCostOfLargeTruckQty);
+        SaveUpgradeValues();
+    }
+    #endregion
 }

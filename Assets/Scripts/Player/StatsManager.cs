@@ -13,6 +13,7 @@ public class StatsManager : MonoBehaviour
 
     public int smallTruckLevel = 0;
     public int largeTrucksLevel = 0;
+    public event System.Action OnCurrencyAdjusted;
 
     private void Awake()
     {
@@ -25,15 +26,21 @@ public class StatsManager : MonoBehaviour
             Instance = this;
         }
     }
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
-        
+        cashInHand = SavingLoadingManager.Instance.LoadCashInHand();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AdjustCurrency(int amount)
     {
-        
+        cashInHand += amount;
+        OnCurrencyAdjusted?.Invoke();
+        SavingLoadingManager.Instance.SaveCashInHand(cashInHand);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SavingLoadingManager.Instance.SaveCashInHand(cashInHand);
     }
 }
