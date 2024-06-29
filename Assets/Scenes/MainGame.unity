@@ -1048,7 +1048,7 @@ GameObject:
   - component: {fileID: 98809166}
   - component: {fileID: 98809165}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Upgrade Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21640,6 +21640,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1582218627}
+  - component: {fileID: 1582218629}
+  - component: {fileID: 1582218628}
   m_Layer: 5
   m_Name: Upgrade Panel Holder
   m_TagString: Untagged
@@ -21662,11 +21664,49 @@ RectTransform:
   - {fileID: 531856742}
   m_Father: {fileID: 809334638}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 912.7245, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1582218628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582218626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.9647059}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1582218629
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582218626}
+  m_CullTransparentMesh: 1
 --- !u!1 &1597002359
 GameObject:
   m_ObjectHideFlags: 0
@@ -25035,6 +25075,7 @@ MonoBehaviour:
   smallTruckLevel: 0
   largeTrucksLevel: 0
   upgradeButton: {fileID: 98809165}
+  closeButton: {fileID: 1883972092}
   upgradePanel: {fileID: 1582218626}
   smallTruckActiveButton: {fileID: 1628962799}
   smallTruckInactiveButton: {fileID: 1920606868}
@@ -25238,7 +25279,7 @@ GameObject:
   - component: {fileID: 1883972093}
   - component: {fileID: 1883972092}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Close Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
