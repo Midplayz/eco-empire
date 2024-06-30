@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class TruckMovementScript : MonoBehaviour
 {
@@ -91,11 +92,11 @@ public class TruckMovementScript : MonoBehaviour
     private IEnumerator MoveToWaypoint(Transform waypoint)
     {
         Vector3 targetPosition = new Vector3(waypoint.position.x, transform.position.y, waypoint.position.z);
-        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+        float distance;
+        while ((distance = Vector3.Distance(transform.position, targetPosition)) > 0.1f)
         {
             Vector3 direction = (targetPosition - transform.position).normalized;
-            Debug.Log("Direction: " + direction + " And Waypoint: " + waypoint);
-            transform.position += direction * speed * Time.deltaTime;
+            transform.position += Vector3.ClampMagnitude(direction * speed * Time.deltaTime, distance);
 
             float smoothingFactor = 0.1f;
             Quaternion targetRotation = Quaternion.LookRotation(direction);

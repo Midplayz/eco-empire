@@ -46,6 +46,5 @@ public class StatsManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         SavingLoadingManager.Instance.SaveCashInHand(cashInHand);
-        Debug.Log("Cash In Hand Saved " + cashInHand);
     }
 }

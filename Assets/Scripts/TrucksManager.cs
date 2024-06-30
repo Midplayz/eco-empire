@@ -97,7 +97,6 @@ public class TrucksManager : MonoBehaviour
             tr.outForDuty = true;
         }
         List<HouseManager> availableHouses = HouseStateManager.Instance.GetAvailableHouses();
-        Debug.Log(availableHouses.Count);
         if (availableHouses.Count > 0)
         {
             int targetHouseCount = Math.Min(availableHouses.Count, tr.truckCapacity);
