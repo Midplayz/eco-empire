@@ -32,6 +32,7 @@ public class UpgradeButton : MonoBehaviour
                     StatsManager.Instance.AdjustCurrency(-UpgradesManager.Instance.currentCostOfSmallTruckQty);
                     SavingLoadingManager.Instance.SaveSmallTrucksOwned(UpgradesManager.Instance.smallTrucksOwned);
                     UpgradesManager.Instance.OnSmallTruckQtyPurchased();
+                    SoundManager.Instance.PlaySmallTruckPurchaseSound();
                 }
                 break;
 
@@ -42,6 +43,7 @@ public class UpgradeButton : MonoBehaviour
                     StatsManager.Instance.AdjustCurrency(-UpgradesManager.Instance.currentCostOfSmallTruckSpeed);
                     SavingLoadingManager.Instance.SaveSmallTruckLevel(UpgradesManager.Instance.smallTruckLevel);
                     UpgradesManager.Instance.OnSmallTruckUpgraded();
+                    SoundManager.Instance.PlayPurchaseSound();
                 }
                 break;
 
@@ -52,6 +54,7 @@ public class UpgradeButton : MonoBehaviour
                     StatsManager.Instance.AdjustCurrency(-UpgradesManager.Instance.currentCostOfLargeTruckQty);
                     SavingLoadingManager.Instance.SaveLargeTrucksOwned(UpgradesManager.Instance.largeTrucksOwned);
                     UpgradesManager.Instance.OnLargeTruckQtyPurchased();
+                    SoundManager.Instance.PlaylargeTruckPurchaseSound();
                 }
                 break;
 
@@ -62,6 +65,7 @@ public class UpgradeButton : MonoBehaviour
                     StatsManager.Instance.AdjustCurrency(-UpgradesManager.Instance.currentCostOfLargeTruckSpeed);
                     SavingLoadingManager.Instance.SaveLargeTruckLevel(UpgradesManager.Instance.largeTrucksLevel);
                     UpgradesManager.Instance.OnLargeTruckUpgraded();
+                    SoundManager.Instance.PlayPurchaseSound();
                 }
                 break;
 
@@ -72,6 +76,7 @@ public class UpgradeButton : MonoBehaviour
                     HouseStateManager.Instance.HouseManagerList[houseIndex].OnUnlock();
                     StatsManager.Instance.AdjustCurrency(-UpgradesManager.Instance.currentHouseCosts[houseIndex - 1]);
                     SavingLoadingManager.Instance.SaveHousesUnlocked(UpgradesManager.Instance.housesUnlocked);
+                    SoundManager.Instance.PlayPurchaseSound();
                 }
                 break;
 
@@ -143,13 +148,13 @@ public class UpgradeButton : MonoBehaviour
                 else
                 {
                     gameObject.GetComponentInChildren<Button>().interactable = false;
-                    nameText.text = "Qty x" + (UpgradesManager.Instance.largeTrucksOwned + 1).ToString();
+                    nameText.text = "Qty x" + (UpgradesManager.Instance.largeTrucksOwned).ToString();
                     priceText.text = "$" + UpgradesManager.Instance.currentCostOfLargeTruckQty;
                 }
                 break;
 
             case buttonAction.LargeTruckSpeed:
-                if (StatsManager.Instance.cashInHand >= UpgradesManager.Instance.currentCostOfLargeTruckSpeed && UpgradesManager.Instance.largeTrucksLevel < 5)
+                if (UpgradesManager.Instance.largeTrucksOwned>0 && StatsManager.Instance.cashInHand >= UpgradesManager.Instance.currentCostOfLargeTruckSpeed && UpgradesManager.Instance.largeTrucksLevel < 5)
                 {
                     gameObject.GetComponentInChildren<Button>().interactable = true;
                     nameText.text = "Load Speed Lvl x" + (UpgradesManager.Instance.largeTrucksLevel).ToString();
@@ -160,6 +165,12 @@ public class UpgradeButton : MonoBehaviour
                     gameObject.GetComponentInChildren<Button>().interactable = false;
                     nameText.text = "Load Speed Lvl x" + (UpgradesManager.Instance.largeTrucksLevel).ToString();
                     priceText.text = "Max!";
+                }
+                else if(UpgradesManager.Instance.largeTrucksOwned == 0)
+                {
+                    gameObject.GetComponentInChildren<Button>().interactable = false;
+                    nameText.text = "Load Speed Lvl x" + (UpgradesManager.Instance.largeTrucksLevel).ToString();
+                    priceText.text = "Locked";
                 }
                 else 
                 {

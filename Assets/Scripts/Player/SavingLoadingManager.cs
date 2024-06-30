@@ -11,7 +11,6 @@ public class SavingLoadingManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -154,7 +153,6 @@ public class SavingLoadingManager : MonoBehaviour
                 }
             }
 
-            // Save the default values
             SaveAll(defaultCashInHand, defaultSmallTrucksOwned, defaultLargeTrucksOwned, defaultHousesUnlocked, defaultSmallTruckLevel, defaultLargeTruckLevel);
 
             Debug.Log("No save data found. Initialized with default values.");

@@ -21,25 +21,6 @@ public class TruckMovementScript : MonoBehaviour
     private Transform targetWaypoint;
     private Vector3 startPosition;
 
-    void Start()
-    {
-        //if(targetHouses.Count() > truckCapacity)
-        //{
-        //    Debug.LogError(transform.name + " Has more Targets than Capacity!");
-        //    return;
-        //}
-        //if (pathDefiner == null || pathDefiner.waypoints.Length == 0)
-        //{
-        //    Debug.LogError("PathDefiner is not assigned or has no waypoints.");
-        //    return;
-        //}
-
-        //startPosition = pathDefiner.waypoints[0].position;
-        //transform.position = new Vector3(startPosition.x, transform.position.y, startPosition.z);
-
-        //StartCoroutine(MoveAlongPath());
-    }
-
     public void StartTrip()
     {
         if (targetHouses.Count() > truckCapacity)
@@ -67,13 +48,11 @@ public class TruckMovementScript : MonoBehaviour
                 targetWaypoint = pathDefiner.waypoints[currentWaypointIndex];
                 yield return StartCoroutine(MoveToWaypoint(targetWaypoint));
 
-                // Check if we are supposed to stop at a house
-                if (!isReturning && currentHouseIndex < targetHouses.Length)
+                if (!isReturning && currentHouseIndex < targetHouses.Length && targetHouses[currentHouseIndex] != null)
                 {
                     Transform targetHouse = targetHouses[currentHouseIndex];
                     int closestMainRoadWaypointIndex = FindClosestMainRoadWaypointIndex(targetHouse.position);
 
-                    // Move through all intermediate waypoints to the closest one before going to the house
                     while (currentWaypointIndex < closestMainRoadWaypointIndex)
                     {
                         targetWaypoint = pathDefiner.waypoints[currentWaypointIndex];
@@ -81,19 +60,15 @@ public class TruckMovementScript : MonoBehaviour
                         currentWaypointIndex++;
                     }
 
-                    // Move to the target house
                     yield return StartCoroutine(MoveToTargetHouse(targetHouse));
                     currentHouseIndex++;
 
-                    // After visiting the house, find the next waypoint to follow
                     currentWaypointIndex = FindNextWaypointIndex(targetHouse.position);
                 }
                 else if (isReturning && currentWaypointIndex >= pathDefiner.waypoints.Length - 1)
                 {
-                    // Finished returning to the start
                     outForDuty = false;
 
-                    // Reset values for the next run
                     currentHouseIndex = 0;
                     currentWaypointIndex = 0;
                     isReturning = false;
@@ -102,12 +77,10 @@ public class TruckMovementScript : MonoBehaviour
                     yield break;
                 }
 
-                // Move to the next waypoint
                 currentWaypointIndex++;
             }
             else
             {
-                // If we finished the main path, start returning to the start
                 isReturning = true;
                 currentWaypointIndex = pathDefiner.waypoints.Length - 1;
                 currentHouseIndex = 0; 
@@ -121,10 +94,12 @@ public class TruckMovementScript : MonoBehaviour
         while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
         {
             Vector3 direction = (targetPosition - transform.position).normalized;
+            Debug.Log("Direction: " + direction + " And Waypoint: " + waypoint);
             transform.position += direction * speed * Time.deltaTime;
 
+            float smoothingFactor = 0.1f;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1 - Mathf.Pow(smoothingFactor, Time.deltaTime));
 
             yield return null;
         }
@@ -132,7 +107,6 @@ public class TruckMovementScript : MonoBehaviour
 
     private IEnumerator MoveToTargetHouse(Transform house)
     {
-        // Move to the house
         Vector3 targetPosition = new Vector3(house.position.x, transform.position.y, house.position.z);
         yield return StartCoroutine(MoveToWaypoint(house));
 
@@ -144,11 +118,11 @@ public class TruckMovementScript : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
-        //transform.rotation = Quaternion.Euler(0, 0, 0);
 
         yield return new WaitForSeconds(stopDuration);
 
         house.GetComponent<WayPointHouseHolder>().targetHouse.OnTrashPickup();
+        StatsManager.Instance.AdjustCurrency(house.GetComponent<WayPointHouseHolder>().targetHouse.costOfTrashCollection);
         trashIntruck.SetActive(true);
         int closestMainRoadWaypointIndex = FindClosestMainRoadWaypointIndex(transform.position);
         Transform closestMainRoadWaypoint = pathDefiner.waypoints[closestMainRoadWaypointIndex+1];

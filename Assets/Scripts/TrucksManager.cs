@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Unity.VisualScripting;
+using System;
 
 public class TrucksManager : MonoBehaviour
 {
@@ -87,22 +88,28 @@ public class TrucksManager : MonoBehaviour
 
     public void SendTruckForDuty(TruckMovementScript tr)
     {
+        if(tr.outForDuty == true)
+        {
+            return;
+        }
+        else
+        {
+            tr.outForDuty = true;
+        }
         List<HouseManager> availableHouses = HouseStateManager.Instance.GetAvailableHouses();
         Debug.Log(availableHouses.Count);
         if (availableHouses.Count > 0)
         {
-            if (availableHouses.Count >= tr.truckCapacity)
+            int targetHouseCount = Math.Min(availableHouses.Count, tr.truckCapacity);
+            tr.targetHouses = new Transform[targetHouseCount];
+
+            for (int i = 0; i < targetHouseCount; i++)
             {
-                tr.targetHouses = new Transform[tr.truckCapacity];
-            }
-            else
-            {
-                tr.targetHouses = new Transform[availableHouses.Count];
-            }
-            for (int i = 0; i < tr.truckCapacity; i++)
-            {
-                tr.targetHouses[i] = (availableHouses[i].WayPointForHouse);
-                availableHouses[i].isBooked = true;
+                if (availableHouses[i] != null)
+                {
+                    tr.targetHouses[i] = availableHouses[i].WayPointForHouse;
+                    availableHouses[i].isBooked = true;
+                }
             }
         }
         else

@@ -11,7 +11,8 @@ public class HouseManager : MonoBehaviour
     public bool hasTrash = false;
     public Transform WayPointForHouse;
 
-    // Start is called before the first frame update
+    public int costOfTrashCollection;
+
     void Start()
     {
         if (isUnlocked)
@@ -26,12 +27,6 @@ public class HouseManager : MonoBehaviour
             trash.SetActive(false);
             hasTrash = false;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void OnUnlock()
@@ -59,7 +54,7 @@ public class HouseManager : MonoBehaviour
 
     public IEnumerator ResetTrash()
     {
-        int timeForReset = Random.Range(10, 25);
+        int timeForReset = Random.Range(5, 10);
         yield return new WaitForSeconds(timeForReset);
         OnTrashRestored();
     }
