@@ -84,6 +84,7 @@ public class UpgradeButton : MonoBehaviour
                 Debug.LogError("Unknown button type: " + currentAction);
                 break;
         }
+        UpdateButtonState();
     }
 
     private void UpdateButtonState()

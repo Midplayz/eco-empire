@@ -28,6 +28,7 @@ public class UpgradesManager : MonoBehaviour
     [field: SerializeField] private Button upgradeButton;
     [field: SerializeField] private Button closeButton;
     [field: SerializeField] private GameObject upgradePanel;
+    [field: SerializeField] private GameObject resetButton;
 
     [field: SerializeField] private Button smallTruckActiveButton;
     [field: SerializeField] private Button smallTruckInactiveButton;
@@ -117,12 +118,14 @@ public class UpgradesManager : MonoBehaviour
         upgradePanel.SetActive(true);
         OnOpenUpgradeMenu();
         upgradeButton.gameObject.SetActive(false);
+        resetButton.SetActive(false);
     }
 
     private void onCloseButtonClicked()
     {
         upgradePanel.SetActive(false);
         upgradeButton.gameObject.SetActive(true);
+        resetButton.SetActive(true);
     }
 
     public void OnOpenUpgradeMenu()

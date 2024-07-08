@@ -1,10 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SavingLoadingManager : MonoBehaviour
 {
     public static SavingLoadingManager Instance;
+    [Header("Resetting Stuff")]
+    [SerializeField] private GameObject resetConfirmationPanel;
+    [SerializeField] private Button confirmButton;
+    [SerializeField] private Button cancelButton;
+    [SerializeField] private Button resetButton;
+    [SerializeField] private GameObject upgradeButton;
 
     private void Awake()
     {
@@ -18,13 +25,12 @@ public class SavingLoadingManager : MonoBehaviour
         }
         CheckIfNoSaveData();
     }
-
-    private void Update()
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            DeleteAllData();
-        }
+        resetConfirmationPanel.SetActive(false);
+        resetButton.onClick.AddListener(() => OnClickResetButton());
+        confirmButton.onClick.AddListener(() => DeleteAllData());
+        cancelButton.onClick.AddListener(() => OnCancel()); 
     }
 
     public void SaveHousesUnlocked(List<bool> housesUnlocked)
@@ -163,4 +169,18 @@ public class SavingLoadingManager : MonoBehaviour
         }
     }
 
+    #region Reset Stuff
+    private void OnClickResetButton()
+    {
+        resetConfirmationPanel.SetActive(true);
+        upgradeButton.SetActive(false);
+        resetButton.gameObject.SetActive(false);
+    }
+    private void OnCancel()
+    {
+        resetConfirmationPanel.SetActive(false);
+        upgradeButton.SetActive(true);
+        resetButton.gameObject.SetActive(true);
+    }
+    #endregion
 }

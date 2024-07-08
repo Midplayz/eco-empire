@@ -128,16 +128,4 @@ public class TrucksManager : MonoBehaviour
         trucksOutForDuty.Remove(tr);
         tr.gameObject.SetActive(false);
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            OnLargeTruckPurchase();
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            OnSmallTruckPurchase();
-        }
-    }
 }

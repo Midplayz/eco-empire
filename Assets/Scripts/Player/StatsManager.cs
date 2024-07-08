@@ -34,7 +34,6 @@ public class StatsManager : MonoBehaviour
         cashInHand = SavingLoadingManager.Instance.LoadCashInHand();
         cashText.text= "$" + cashInHand;
     }
-
     public void AdjustCurrency(int amount)
     {
         cashInHand += amount;
