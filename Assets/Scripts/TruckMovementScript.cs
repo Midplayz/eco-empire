@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ public class TruckMovementScript : MonoBehaviour
     private int currentWaypointIndex = 0;
     private Transform targetWaypoint;
     private Vector3 startPosition;
+    public bool isFullyAssigned =  false;
 
     public void StartTrip()
     {
@@ -28,6 +30,10 @@ public class TruckMovementScript : MonoBehaviour
         {
             Debug.LogError(transform.name + " Has more Targets than Capacity!");
             return;
+        }
+        else if (targetHouses.Count() == truckCapacity)
+        {
+            isFullyAssigned = true;
         }
         if (pathDefiner == null || pathDefiner.waypoints.Length == 0)
         {
@@ -69,7 +75,7 @@ public class TruckMovementScript : MonoBehaviour
                 else if (isReturning && currentWaypointIndex >= pathDefiner.waypoints.Length - 1)
                 {
                     outForDuty = false;
-
+                    isFullyAssigned = false;
                     currentHouseIndex = 0;
                     currentWaypointIndex = 0;
                     isReturning = false;
@@ -159,5 +165,31 @@ public class TruckMovementScript : MonoBehaviour
             }
         }
         return 0;
+    }
+
+    public bool HasCrossedWaypoint(Transform waypoint)
+    {
+        if (currentWaypointIndex >= pathDefiner.waypoints.Length)
+        {
+            return false;
+        }
+
+        Vector3 currentWaypointPosition = pathDefiner.waypoints[currentWaypointIndex].position;
+        Vector3 targetWaypointPosition = waypoint.position;
+        return Vector3.Distance(currentWaypointPosition, startPosition) > Vector3.Distance(targetWaypointPosition, startPosition);
+    }
+
+    public void AssignHouse(Transform newHouseWaypoint, HouseManager houseManager)
+    {
+        int currentTargetHousesCount = targetHouses.Length;
+        Transform[] newTargetHouses = new Transform[currentTargetHousesCount + 1];
+        Array.Copy(targetHouses, newTargetHouses, currentTargetHousesCount);
+        newTargetHouses[currentTargetHousesCount] = newHouseWaypoint;
+        targetHouses = newTargetHouses;
+
+        truckCapacity++;
+        isFullyAssigned = targetHouses.Length == truckCapacity;
+
+        houseManager.isBooked = true;
     }
 }

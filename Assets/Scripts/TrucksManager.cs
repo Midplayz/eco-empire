@@ -128,4 +128,27 @@ public class TrucksManager : MonoBehaviour
         trucksOutForDuty.Remove(tr);
         tr.gameObject.SetActive(false);
     }
+
+    public void AssignAvailableHousesToTrucks()
+    {
+        List<HouseManager> availableHouses = HouseStateManager.Instance.GetAvailableHouses();
+
+        foreach (var truck in trucksOutForDuty)
+        {
+            if (!truck.isFullyAssigned && availableHouses.Count > 0)
+            {
+                for (int i = 0; i < availableHouses.Count; i++)
+                {
+                    if (availableHouses[i] != null && !truck.HasCrossedWaypoint(availableHouses[i].WayPointForHouse))
+                    {
+                        Transform newHouseWaypoint = availableHouses[i].WayPointForHouse;
+                        truck.AssignHouse(newHouseWaypoint, availableHouses[i]);
+                        availableHouses[i].isBooked = true;
+                        availableHouses.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }

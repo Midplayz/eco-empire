@@ -50,6 +50,7 @@ public class HouseManager : MonoBehaviour
         trash.SetActive(true);
         hasTrash = true;
         isBooked = false;
+        //TrucksManager.Instance.AssignAvailableHousesToTrucks();
     }
 
     public IEnumerator ResetTrash()
